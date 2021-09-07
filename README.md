@@ -28,10 +28,10 @@ speed-up result (1 GeForce 1080Ti GPU, num_workers=8)
 
 |Dataloader its/s|Origin XE|Optimized XE|Accelerate|Origin SCST|Optimized SCST|Accelerate|
 |---|---|---|---|---|---|---|
-|50|12.5|52.5|320%|29.3|90.7|209%|
-|100|5.5|33.5|510%|22.3|88.5|297%| 
-|150|3.7|25.4|580%|13.4|71.8|435%| 
-|200|2.7|20.1|650%|11.4|54.1|376%|
+|batch size=50|12.5|52.5|320%|29.3|90.7|209%|
+|batch size=100|5.5|33.5|510%|22.3|88.5|297%| 
+|batch size=150|3.7|25.4|580%|13.4|71.8|435%| 
+|batch size=200|2.7|20.1|650%|11.4|54.1|376%|
 
 Things I have tried but not useful
 
