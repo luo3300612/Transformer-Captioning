@@ -26,8 +26,8 @@ speed-up result (1 GeForce 1080Ti GPU, num_workers=8)
 |XE|7.5|10.3|138%|
 |SCST|0.6|1.3|204%|
 
-|Dataloader its/s|Origin XE|Optimized XE|Accelerate|Origin SCST|Optimized SCST| 
-|---|---|---|---|
+|Dataloader its/s|Origin XE|Optimized XE|Accelerate|Origin SCST|Optimized SCST|Accelerate|
+|---|---|---|---|---|---|---|
 |50|12.5|52.5|320%|29.3|90.7|209%|
 |100|5.5|33.5|510%|22.3|88.5|297%| 
 |150|3.7|25.4|580%|13.4|71.8|435%| 
