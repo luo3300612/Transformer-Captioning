@@ -237,15 +237,15 @@ def build_cider_train(ref_caps_train, args):
     corpus = make_corpus(ref_caps_train)
     # cider_train = Cider(corpus)
     encoded_corpus = encode_corpus(corpus, text_field.vocab.stoi)
-    if not os.path.isfile('.vocab_cache/cider_%s.pkl' % args.exp_name):
+    if not os.path.isfile('.vocab_cache/cider.pkl' % args.exp_name):
         cider_train = Cider(encoded_corpus, get_cache=True)
         if not os.path.exists('.vocab_cache'):
             os.mkdir('.vocab_cache')
-        pickle.dump(cider_train.gts_cache, open('.vocab_cache/cider_%s.pkl' % args.exp_name, 'wb'))
+        pickle.dump(cider_train.gts_cache, open('.vocab_cache/cider.pkl' % args.exp_name, 'wb'))
     else:
         print('loading origin_cider cache')
         cider_train = Cider(encoded_corpus)
-        cider_train.gts_cache = pickle.load(open('.vocab_cache/cider_%s.pkl' % args.exp_name, 'rb'))
+        cider_train.gts_cache = pickle.load(open('.vocab_cache/cider.pkl' % args.exp_name, 'rb'))
     return cider_train
 
 
