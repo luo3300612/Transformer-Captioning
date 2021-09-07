@@ -19,7 +19,7 @@ Specifically, we optimize following aspects:
 * contiguous model parameter
 * other details...
 
-speed-up result (1 GeForce 1080Ti GPU, num_workers=8)
+speed-up result (1 GeForce 1080Ti GPU, num_workers=8, batch_size=50(XE)/100(SCST))
 
 |Training its/s|Original|Optimized|Accelerate|
 |---|---|---|---|
@@ -103,8 +103,9 @@ Run `python train.py` using the following arguments:
 
 For example, to train our model with the parameters used in our experiments, use
 
+We recommend to use batch size=100 during SCST stage. Since it will accelerate converge without obvious accuracy decline  
 ```
-python train.py --exp_name m2_transformer --batch_size 50 --m 40 --head 8 --warmup 10000 --features_path /path/to/features --annotation_folder /path/to/annotations
+python train.py --exp_name test --batch_size 50 --head 8 --features_path ~/datassd/coco_detections.hdf5 --annotation_folder annotation --workers 8 --rl_batch_size 100 --image_field FasterImageDetectionsField --model transformer --seed 118
 ```
 
 #### References
