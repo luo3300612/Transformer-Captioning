@@ -1,7 +1,7 @@
 from .bleu import Bleu
 from .meteor import Meteor
 from .rouge import Rouge
-from .origin_cider import Cider
+from .cider import Cider
 from .tokenizer import PTBTokenizer
 from .spice.spice import Spice
 
