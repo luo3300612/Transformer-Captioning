@@ -24,6 +24,7 @@ class Cider:
         self._sigma = sigma
         self.doc_frequency = None
         self.ref_len = None
+        self.gts_cache = None
         if gts is not None:
             tmp_cider = CiderScorer(gts, n=self._n, sigma=self._sigma, get_cache=get_cache)
             self.doc_frequency = tmp_cider.doc_frequency

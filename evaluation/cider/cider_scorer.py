@@ -102,7 +102,7 @@ class CiderScorer(object):
 
         if get_cache:
             self.gts_cache = {}
-            for ref, cref in tqdm(zip(self.refs, self.crefs), desc="preparing origin_cider cache"):
+            for ref, cref in tqdm(zip(self.refs, self.crefs), desc="preparing cider cache"):
                 a_ref = tuple(ref[0])
                 a_cref = cref[0]
                 # pdb.set_trace()

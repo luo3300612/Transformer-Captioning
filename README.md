@@ -103,7 +103,7 @@ Run `python train.py` using the following arguments:
 
 For example, to train our model with the parameters used in our experiments, use
 
-We recommend to use batch size=100 during SCST stage. Since it will accelerate converge without obvious accuracy decline  
+We recommend to use batch size=100 during SCST stage. Since it will accelerate convergence without obvious accuracy decline  
 ```
 python train.py --exp_name test --batch_size 50 --head 8 --features_path ~/datassd/coco_detections.hdf5 --annotation_folder annotation --workers 8 --rl_batch_size 100 --image_field FasterImageDetectionsField --model transformer --seed 118
 ```

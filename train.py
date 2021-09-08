@@ -232,20 +232,20 @@ def make_corpus(ref_train):
     return res
 
 
-def build_cider_train(ref_caps_train, args):
+def build_cider_train(ref_caps_train):
     # corpus = PTBTokenizer.tokenize(ref_caps_train)
     corpus = make_corpus(ref_caps_train)
     # cider_train = Cider(corpus)
     encoded_corpus = encode_corpus(corpus, text_field.vocab.stoi)
-    if not os.path.isfile('.vocab_cache/cider.pkl' % args.exp_name):
+    if not os.path.isfile('.vocab_cache/cider.pkl'):
         cider_train = Cider(encoded_corpus, get_cache=True)
         if not os.path.exists('.vocab_cache'):
             os.mkdir('.vocab_cache')
-        pickle.dump(cider_train.gts_cache, open('.vocab_cache/cider.pkl' % args.exp_name, 'wb'))
+        pickle.dump(cider_train.gts_cache, open('.vocab_cache/cider.pkl', 'wb'))
     else:
-        print('loading origin_cider cache')
+        print('loading cider cache')
         cider_train = Cider(encoded_corpus)
-        cider_train.gts_cache = pickle.load(open('.vocab_cache/cider.pkl' % args.exp_name, 'rb'))
+        cider_train.gts_cache = pickle.load(open('.vocab_cache/cider.pkl', 'rb'))
     return cider_train
 
 
@@ -416,7 +416,7 @@ if __name__ == '__main__':
         # corpus = PTBTokenizer.tokenize(ref_caps_train)
         corpus = make_corpus(ref_caps_train)
         encoded_corpus = encode_corpus(corpus, text_field.vocab.stoi)
-        cider_train = build_cider_train(ref_caps_train, args)
+        cider_train = build_cider_train(ref_caps_train)
         del dataloader_train
         train_scst(model, dict_dataloader_train, optim, cider_train, text_field, test=True)
         print('test done')
@@ -433,7 +433,7 @@ if __name__ == '__main__':
             writer.add_scalar('data/train_loss', train_loss, e)
         else:
             if cider_train is None:
-                cider_train = build_cider_train(ref_caps_train, args)
+                cider_train = build_cider_train(ref_caps_train)
             train_loss, reward, reward_baseline = train_scst(model, dict_dataloader_train, optim, cider_train,
                                                              text_field)
             writer.add_scalar('data/train_loss', train_loss, e)
@@ -506,7 +506,7 @@ if __name__ == '__main__':
             parameters = ContiguousParams(model.parameters())
             optim = Adam(parameters.contiguous(), lr=args.rl_learning_rate)
 
-            print('Resuming from epoch %d, validation loss %f, and best origin_cider %f' % (
+            print('Resuming from epoch %d, validation loss %f, and best cider %f' % (
                 data['epoch'], data['val_loss'], data['best_cider']))
 
         torch.save({
