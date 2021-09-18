@@ -190,11 +190,11 @@ def train_scst(model, dataloader, optim, cider, text_field, test=False):
 
             if test:
                 break
+    scheduler.step()
 
     loss = running_loss / len(dataloader)
     reward = running_reward / len(dataloader)
     reward_baseline = running_reward_baseline / len(dataloader)
-    torch.cuda.synchronize()
     return loss, reward, reward_baseline
 
 
@@ -270,7 +270,7 @@ if __name__ == '__main__':
     parser.add_argument('--dim_feats', type=int, default=2048)
     parser.add_argument('--image_field', type=str, default="ImageDetectionsField")
     parser.add_argument('--model', type=str, default="transformer")
-    parser.add_argument('--rl_at', type=int, default=20)
+    parser.add_argument('--rl_at', type=int, default=19)
     parser.add_argument('--seed', type=int, default=1234)
     parser.add_argument('--test', action='store_true', default=False)
 
@@ -363,6 +363,16 @@ if __name__ == '__main__':
         return lr
 
 
+    def lambda_rl_lr(s):
+        base_lr = args.rl_learning_rate
+
+        if s <= args.rl_at + 15:
+            lr = base_lr
+        else:
+            lr = base_lr * 0.1
+        return lr
+
+
     # Initial conditions
     optim = Adam(parameters.contiguous(), lr=1, betas=(0.9, 0.98))
     scheduler = LambdaLR(optim, lambda_lr)
@@ -387,11 +397,13 @@ if __name__ == '__main__':
             random.setstate(data['random_rng_state'])
             model.load_state_dict(data['state_dict'], strict=False)
             optim.load_state_dict(data['optimizer'])
-            scheduler.load_state_dict(data['scheduler'])
             start_epoch = data['epoch'] + 1
             best_cider = data['best_cider']
             patience = data['patience']
             use_rl = data['use_rl']
+            if use_rl:
+                scheduler = LambdaLR(optim, lambda_rl_lr)
+            scheduler.load_state_dict(data['scheduler'])
             print('Resuming from epoch %d, validation loss %f, and best origin_cider %f' % (
                 data['epoch'], data['val_loss'], data['best_cider']))
 
@@ -424,6 +436,9 @@ if __name__ == '__main__':
 
     print("Training starts")
     for e in range(start_epoch, start_epoch + 100):
+        current_lr = optim.state_dict()['param_groups'][0]['lr']
+        writer.add_scalar('data/learning_rate', current_lr, e)
+        print('lr', current_lr)
         if hasattr(image_field, 'f'):
             image_field.f.close()
             del image_field.f
@@ -504,7 +519,10 @@ if __name__ == '__main__':
             random.setstate(data['random_rng_state'])
             model.load_state_dict(data['state_dict'])
             parameters = ContiguousParams(model.parameters())
-            optim = Adam(parameters.contiguous(), lr=args.rl_learning_rate)
+            optim = Adam(parameters.contiguous(), lr=1)
+            scheduler = LambdaLR(optim, lambda_rl_lr)
+            for i in range(e):
+                scheduler.step()
 
             print('Resuming from epoch %d, validation loss %f, and best cider %f' % (
                 data['epoch'], data['val_loss'], data['best_cider']))

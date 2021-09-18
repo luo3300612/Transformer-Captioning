@@ -95,7 +95,7 @@ class MultiHeadAttention(Module):
             self.register_state('running_keys', torch.zeros((0, d_model)))
             self.register_state('running_values', torch.zeros((0, d_model)))
 
-    def forward(self, queries, keys, values, attention_mask=None, attention_weights=None, connection_weight=1):
+    def forward(self, queries, keys, values, attention_mask=None, attention_weights=None):
         if self.can_be_stateful and self._is_stateful:
             self.running_keys = torch.cat([self.running_keys, keys], 1)
             keys = self.running_keys
@@ -113,6 +113,6 @@ class MultiHeadAttention(Module):
             out = self.attention(queries, keys, values, attention_mask, attention_weights)
             out = self.dropout(out)
             # add connecttion_weight
-            out = self.layer_norm(queries * connection_weight + out)
+            out = self.layer_norm(queries + out)
             # print("connection_weight from M-HEAD", connection_weight)
         return out

@@ -41,6 +41,7 @@ Things I have tried but not useful
 * BeamableMM: slower than the original
 
 ## Environment setup
+pytorch==1.7.1
 
 Clone the repository and create the `m2release` conda environment using the `environment.yml` file:
 
